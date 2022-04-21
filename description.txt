@@ -1,0 +1,23 @@
+https://smallpond.ca/jim/sand/dunefieldMorphology/index.html
+
+ Általában ilyen szimulációkban dupla bufferelést szoktunk alkalmazni: két egyforma méretű buffert allokálunk, amelyek közül az időléptetés során mindig az egyikből olvasunk, a másikba írunk, a következő lépésben pedig fordítva, szerepet cserélnek, pl. egy indexelési trükkel, hogy ne kelljen másolni a kettő között.
+
+A homokdűnés léptetési logikát megtalálod a linken a feladatban, szerintem érdemes ketté bontani: 
+
+- az x irányú messzire szállítás (hopping), mivel ez a felszíntől függően nagyon messzire is mehet, valószínűleg atomikus műveletek kellenek ide. Ezt párszor meg kell / lehet ismételni (random részecske választás max ~5-10%-a a teljes rácsnak),  aztán annak a transzportja amíg le nem helyeződik)
+
+- lavina ellenőrzés az egész táblán, illetve annak végrehajtása
+
+
+Jó lenne, ha képként ki tudnál menteni állapotokat a szimulációból. A kezdőfeltétel meg lehet véletlen.
+
+A véletlenszám generálás OpenCL-es clRNG példakódja:
+https://github.com/Wigner-GPU-Lab/Teaching/tree/gpgpu2-2020-1/GPGPU1/OpenCL/CppBindings/MC-Pi
+
+És a megfelelője CUDA-ban:
+https://github.com/Wigner-GPU-Lab/Teaching/blob/gpgpu2-2020-1/GPGPU1/CUDA/culibraries/curandpi.cu
+
+
+Itt egy nagyon egyszerű generátor, ami egy long state-el el van, ha azt inicializálod:
+https://github.com/Wigner-GPU-Lab/Teaching/blob/master/GPGPU2/MC_sycl.cpp#L17
+
