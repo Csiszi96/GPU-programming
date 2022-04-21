@@ -2,9 +2,7 @@ https://smallpond.ca/jim/sand/dunefieldMorphology/index.html
 
  Általában ilyen szimulációkban dupla bufferelést szoktunk alkalmazni: két egyforma méretű buffert allokálunk, amelyek közül az időléptetés során mindig az egyikből olvasunk, a másikba írunk, a következő lépésben pedig fordítva, szerepet cserélnek, pl. egy indexelési trükkel, hogy ne kelljen másolni a kettő között.
 
-A homokdűnés léptetési logikát megtalálod a linken a feladatban, szerintem érdemes ketté bontani: 
-
-- az x irányú messzire szállítás (hopping), mivel ez a felszíntől függően nagyon messzire is mehet, valószínűleg atomikus műveletek kellenek ide. Ezt párszor meg kell / lehet ismételni (random részecske választás max ~5-10%-a a teljes rácsnak),  aztán annak a transzportja amíg le nem helyeződik)
+- az x irányú messzire szállítás: "hopping". Felszíntől függően  messzire is mehet -> atomikus műveletek (?). Ezt párszor meg kell / lehet ismételni (random részecske választás max ~5-10%-a a teljes rácsnak),  aztán annak a transzportja amíg le nem helyeződik)
 
 - lavina ellenőrzés az egész táblán, illetve annak végrehajtása
 
@@ -21,3 +19,8 @@ https://github.com/Wigner-GPU-Lab/Teaching/blob/gpgpu2-2020-1/GPGPU1/CUDA/culibr
 Itt egy nagyon egyszerű generátor, ami egy long state-el el van, ha azt inicializálod:
 https://github.com/Wigner-GPU-Lab/Teaching/blob/master/GPGPU2/MC_sycl.cpp#L17
 
+Kérdések:
+	- Mi atomic func?
+	- Avalanche: till stops or one iteration per round?
+	- Hopping: can it tunel through a dune?
+	- pointers
