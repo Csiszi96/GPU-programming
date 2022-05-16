@@ -11,19 +11,11 @@ class Field {
         std::vector<std::vector<Cell*>> field(length, std::vector<Cell*>(width, new Cell(height)));
         
     public:
-        Field(int width, int length) {
-            this->width = width;
-            this->length = length;
-        };
+        Field(int width, int length);
+        ~Field();
         void calculate_sadows();
-        void hopping(); // Select HOPPING_PRECENT of cells and execute hopping
-        void calculate_gradients(); // Calculate gradients for each Cells
-        void landslide(); // Execute landlides on Cells
-
-        void simulate_step() {
-            calculate_sadows();
-            hopping();
-            calculate_gradients();
-            landslide();
-        }
+        void hopping();
+        void calculate_gradients();
+        void landslide();
+        void simulate_step();
 };

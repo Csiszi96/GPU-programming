@@ -33,16 +33,20 @@ class Field {
             this->width = width;
             this->length = length;
         };
-        void calculate_sadows();
-        void hopping(); // Select HOPPING_PRECENT of cells and execute hopping
+        void calculate_sadows();    // Calculate windshadow
+        void hopping();             // Select HOPPING_PRECENT of cells and execute hopping
         void calculate_gradients(); // Calculate gradients for each Cells
-        void landslide(); // Execute landlides on Cells
+        void landslide();           // Execute landslides on Cells
+        void fix_cells();           // 
 
         void simulate_step() {
             calculate_sadows();
             hopping();
+            fix_cell();
+
             calculate_gradients();
             landslide();
+            fix_cell();
         }
 
         void load_neigbours();
@@ -51,6 +55,7 @@ class Field {
 class Cell {
     private:
         int height;
+        int temp_height;
         bool shadow;
 
         Cell* forward;
@@ -60,6 +65,8 @@ class Cell {
 
     public:
         Cell(int height);
+
+        // Height or temp height what is stacked or eroded?
         void erode() { height--; }
         void stack() { height++; }
 
@@ -85,6 +92,10 @@ class Cell {
             else {
                 forward->jump(counter);
             }
+        }
+        
+        void fix_cell() {
+            height = temp_height
         }
 };
 
