@@ -1,4 +1,4 @@
-#include <vector>
+#include "Field.h"
 #include <random>
 
 int const WIDTH = 512;
@@ -44,6 +44,8 @@ class Field {
             calculate_gradients();
             landslide();
         }
+
+        void load_neigbours();
 };
 
 class Cell {
@@ -63,7 +65,7 @@ class Cell {
 
         // Define a random float generator
         bool deposited() {
-            if (shadow || random_float <= DEPOSITE_CHANCE_LIGHT) {
+            if (shadow || random_float() <= DEPOSITE_CHANCE_LIGHT) {
                 stack();
                 return true;
             }
