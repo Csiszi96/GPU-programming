@@ -27,5 +27,6 @@
         "iosfwd": "cpp",
         "random": "cpp",
         "xstring": "cpp"
-    }
+    },
+    "cmake.configureOnOpen": true
 }
