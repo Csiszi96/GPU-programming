@@ -42,11 +42,11 @@ class Field {
         void simulate_step() {
             calculate_sadows();
             hopping();
-            fix_cell();
+            fix_cells();
 
             calculate_gradients();
             landslide();
-            fix_cell();
+            fix_cells();
         }
 
         void load_neigbours();
@@ -95,7 +95,7 @@ class Cell {
         }
         
         void fix_cell() {
-            height = temp_height
+            height = temp_height;
         }
 };
 
