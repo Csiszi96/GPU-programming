@@ -19,3 +19,18 @@ bool Cell::deposited() {
         return false;
     }
 }
+
+void Cell::jump(int counter) {
+    counter--;
+    if (counter == 0) {
+        if (!deposited()) {
+            forward->jump(JUMP_LENGTH);
+        }
+    }
+    else {
+        forward->jump(counter);
+    }
+}
+
+void Cell::fix_cell() 
+    { height = temp_height; }

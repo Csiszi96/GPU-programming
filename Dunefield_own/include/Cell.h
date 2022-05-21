@@ -4,8 +4,8 @@
 class Cell {
     private:
         double DEPOSITE_CHANCE_IN_LIGHT = 0.6;
-        const int JUMP_LENGTH = 1;
-        
+        int JUMP_LENGTH = 1;
+
         int height;
         int temp_height;
         bool shadow;
@@ -27,19 +27,7 @@ class Cell {
         bool deposited();
 
         // Probably needs to be rewritten for GPU
-        void jump(int counter) {
-            counter--;
-            if (counter == 0) {
-                if (!deposited()) {
-                    forward->jump(JUMP_LENGTH);
-                }
-            }
-            else {
-                forward->jump(counter);
-            }
-        }
+        void jump(int counter);
         
-        void fix_cell() {
-            height = temp_height;
-        }
+        void fix_cell();
 };

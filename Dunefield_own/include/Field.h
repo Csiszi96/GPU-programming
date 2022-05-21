@@ -8,7 +8,7 @@ class Field {
         double hopping_prec;
         Random random;
         
-        // Might want to change initialization height
+        // Might want to change initialization height or randomize (with changable mean)
         int height = 10;
         std::vector<std::vector<Cell*>> field(length, std::vector<Cell*>(width, new Cell(height)));
         std::vector<Cell*> field_vector;
@@ -41,4 +41,5 @@ class Field {
 
         // Load the pointers of the neighbouring cells into each cell
         void load_neigbours();
+        arr[2] int warp_coordinates(int x, int y);
 };

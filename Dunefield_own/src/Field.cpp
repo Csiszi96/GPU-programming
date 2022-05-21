@@ -26,3 +26,11 @@ void Field::fix_cells() {
         c->fix_cell();
     }
 }
+
+void Field::load_neigbours() {
+    for (int x = 0; x < length; x++) {
+        for (int y = 0; y < width; y++) {
+            
+        }
+    }
+}
