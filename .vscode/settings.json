@@ -28,5 +28,6 @@
         "random": "cpp",
         "xstring": "cpp"
     },
-    "cmake.configureOnOpen": true
+    "cmake.configureOnOpen": true,
+    "cmake.sourceDirectory": "${workspaceFolder}/Dunefield_own"
 }
