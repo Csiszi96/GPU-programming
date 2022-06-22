@@ -26,6 +26,10 @@ class Random {
             std::uniform_int_distribution<> dist(a, b);
             return dist(*mersene_twister);
         }
+
+        int integer(int b) {
+            return integer(0,b);
+        }
 };
 
 

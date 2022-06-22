@@ -5,7 +5,7 @@ class Cell {
     private:
         double DEPOSITE_CHANCE_IN_LIGHT = 0.6;
         float SHADOW_LENGTH = 1.5;
-        int JUMP_LENGTH = 1;
+        int JUMP_LENGTH = 3;
         int LANDSLIDE_DELTA = 3;
 
         int height;
@@ -19,42 +19,41 @@ class Cell {
         std::vector<Cell*> back_diags;
         std::vector<Cell*> front_diags;
         std::vector<Cell*> neigbours;
+        std::vector<Cell*> diags;
 
     public:
-        // DONE
         Cell(int h);
 
         // Height or temp height what is stacked or eroded?
-        // DONE
         void erode();
         void stack();
 
         // Define a random float generator
-        // DONE
         bool deposited();
 
         // Probably needs to be rewritten for GPU
-        // DONE
+        void hop();
         void jump();
-        void jump(int counter);
         
-        // DONE
         void fix_cell();
 
-        // DONE
         int get_height();
+        bool get_shadow();
 
-        // DONE
         void set_forward(Cell*);
         void set_backward(Cell*);
         void set_sides(Cell*);
         void set_back_diags(Cell*);
         void set_front_diags(Cell*);
 
-        // DONE
         void set_neigbours();
+        void set_diags();
 
-        void landslide();
+        void landslide(bool moore);
 
         void calculate_shadow(float init_shadow, int counter);
+
+        void set_shadow_length(float);
+        void set_jump_length(int);
+        void set_landslide_delta(int);
 };

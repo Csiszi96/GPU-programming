@@ -5,6 +5,11 @@
 
 class Field {
     private:
+        // Module switches
+        bool MOORE = true;
+        bool DISTINCT_HOP = false;
+
+        // Class variables
         int width;
         int length;
         double hopping_prec;
@@ -15,47 +20,45 @@ class Field {
         int height = 10;
         std::vector<std::vector<Cell*>>* field;
         std::vector<Cell*> field_vector;
+        std::vector<Cell*> rnd_field_vector;
+
         
     public:
-        // DONE
         Field(int w, int l);
         Field(int w, int l, double p);
 
         // Calculate windshadow
-        // DONE
         void calculate_shadows();
 
         // Select HOPPING_PRECENT of cells and execute hopping
         // Rewrite for no repeating cells
-        // DONE
         void hopping();
 
-        // Calculate gradients for each Cells
-        void calculate_gradients();
-
         // Execute landslides on Cells
-        // DONE
         void landslides();
 
         // Roll the calculated values into the storage
-        // DONE
         void fix_cells();
 
         // Load the pointers of the neighbouring cells into each cell
-        // DONE
         void load_neigbours();
 
         // std::tuple<int,int> warp_coordinates(int x, int y);
-        // DONE
         Cell* warp_coordinates(int x, int y);
 
         // Simulate the next state of the field
-        // DONE
         void simulate_frame();
 
         // Read the state of the sandpit
-        // DONE
         std::vector<std::vector<int>> get_heights();
+        std::vector<std::vector<bool>> get_shadows();
 
         // std::vector<std::vector<bool>> get_shadows();
+        
+        void set_shadow_length(float);
+        void set_jump_length(int);
+        void set_landslide_delta(int);
+
+        void print_heights();
+        void print_shadows();
 };

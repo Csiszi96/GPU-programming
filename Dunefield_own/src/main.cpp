@@ -1,14 +1,25 @@
 #include "Field.h"
 #include <iostream>
-#include "python_binding.h"
+// #include "python_binding.h"
 
-int const WIDTH = 10;
-int const LENGTH = 10;
-const float HOPPING_PRECENT = 0.1;
 
 // const float SHADOW_ANGLE = 15;
 
-// int main () {
-//     Field field(WIDTH, LENGTH, HOPPING_PRECENT);
-//     return 0;
-// }
+void test() {
+    int WIDTH = 10;
+    int LENGTH = 10;
+    float HOPPING_PRECENT = 0.1f;
+
+    Field field(WIDTH, LENGTH, HOPPING_PRECENT);
+
+    field.simulate_frame();
+
+    field.print_heights();
+    std::cout << std::endl << std::endl;
+    field.print_shadows();
+}
+
+int main () {
+    test();
+    return 0;
+}
