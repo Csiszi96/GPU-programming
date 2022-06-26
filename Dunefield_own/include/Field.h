@@ -5,6 +5,8 @@
 
 class Field {
     private:
+        bool bool_init = false;
+
         // Module switches
         bool MOORE = true;
         bool DISTINCT_HOP = false;
@@ -14,20 +16,18 @@ class Field {
         int length;
         double hopping_prec;
         Random random;
-        // int field_size;
+        int field_size;
         
         // Might want to change initialization height or randomize (with changable mean)
         int height = 10;
         std::vector<std::vector<Cell*>> field;
-        // std::vector<Cell*> field_vector;
+        std::vector<Cell*> field_vector;
         std::vector<Cell*> rnd_field_vector;
         std::vector<Cell*> first_column;
 
         
     public:
-        std::vector<Cell*> field_vector;
-        int field_size;
-
+        Field();
         Field(int w, int l);
         Field(int w, int l, double p);
 
@@ -69,4 +69,7 @@ class Field {
         void print_shadows();
 
         int get_width();
+
+        void init(int, int, double);
+        bool initialized();
 };

@@ -7,8 +7,24 @@ void print(std::string msg) {
 }
 
 Field::Field(int w, int l, double p) : width(w), length(l), hopping_prec(p) {
-    std::cout << "width: " << width << std::endl;
-    std::cout << "length: " << length << std::endl;
+    init(w, l, p);
+}
+
+Field::Field(int w, int l) {
+    Field(w, l, 0.1);
+}
+
+Field::Field() {
+    Field(10, 10);
+}
+
+void Field::init(int w, int l, double p) {
+    if (bool_init) return;
+    else std::cout << "Object is already initialized!" << std::endl;
+
+    width = w;
+    length = l;
+    hopping_prec = p;
     
     field_vector = std::vector<Cell*> (length * width);
     for (int i = 0; i < field_vector.size(); i++) {
@@ -31,14 +47,18 @@ Field::Field(int w, int l, double p) : width(w), length(l), hopping_prec(p) {
     load_neigbours();
 
     // field_vector[0]->erode(); // NOTE: testing line
-    std::cout << "field vector size: " << field_vector.size() << std::endl;
-    std::cout << "rnd vector size: " << rnd_field_vector.size() << std::endl;
-    std::cout << "field size: " << field.size() << std::endl;
     std::cout << "pointer: " << this << std::endl;
+
+    bool_init = true;
 }
 
-Field::Field(int w, int l) {
-    Field(w, l, 0.1);
+bool Field::initialized() {
+    if (bool_init) 
+        return true;
+    else {
+        std::cout << "Object not jet initialized! Run this.init(int width, int height, double hopping_precision!)" << std::endl;
+        return false;
+    }
 }
 
 void Field::simulate_frame() {
@@ -186,16 +206,11 @@ void Field::print_shadows() {
 }
 
 std::vector<int> Field::get_heights_arr() {
-    std::cout << std::endl << "field vector size: " << field_vector.size() << std::endl;
-    std::cout << "rnd vector size: " << rnd_field_vector.size() << std::endl;
-    std::cout << "field size: " << field_size << std::endl;
     std::cout << "pointer: " << this << std::endl;
     
     std::vector<int> ret;
-    for (auto c : field_vector) {
-        std::cout << c->get_height() << " ";
+    for (auto c : field_vector)
         ret.push_back(c->get_height());
-    }
 
     return ret;
 }
