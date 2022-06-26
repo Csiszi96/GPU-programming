@@ -25,8 +25,9 @@ class Cell {
         Cell(int h);
 
         // Height or temp height what is stacked or eroded?
-        void erode();
+        bool erode();
         void stack();
+        void stack_tmp();
 
         // Define a random float generator
         bool deposited();

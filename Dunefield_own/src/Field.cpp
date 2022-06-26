@@ -7,13 +7,34 @@ void print(std::string msg) {
 }
 
 Field::Field(int w, int l, double p) : width(w), length(l), hopping_prec(p) {
+    std::cout << "width: " << width << std::endl;
+    std::cout << "length: " << length << std::endl;
     
-    field = new std::vector<std::vector<Cell*>> (length, std::vector<Cell*>(width, new Cell(height)));
-    for(const auto &c: (*field)) {
-        field_vector.insert(field_vector.end(), c.begin(), c.end()); 
+    field_vector = std::vector<Cell*> (length * width);
+    for (int i = 0; i < field_vector.size(); i++) {
+        if (i == 0 || i == 21) field_vector[i] = new Cell(20);
+        else field_vector[i] = new Cell(height);
     }
+
+
+    for (int y = 0; y < width; y ++) {
+        std::vector<Cell*>::const_iterator first = field_vector.begin() + y * length;
+        std::vector<Cell*>::const_iterator last = field_vector.begin() + (y + 1) * length;
+        std::vector<Cell*> row(first, last);
+
+        field.push_back(row);
+        first_column.push_back(row[0]);
+    }
+
+    rnd_field_vector = field_vector;
     field_size = (int)field_vector.size();
     load_neigbours();
+
+    // field_vector[0]->erode(); // NOTE: testing line
+    std::cout << "field vector size: " << field_vector.size() << std::endl;
+    std::cout << "rnd vector size: " << rnd_field_vector.size() << std::endl;
+    std::cout << "field size: " << field.size() << std::endl;
+    std::cout << "pointer: " << this << std::endl;
 }
 
 Field::Field(int w, int l) {
@@ -21,35 +42,33 @@ Field::Field(int w, int l) {
 }
 
 void Field::simulate_frame() {
-    print("1");
-    // calculate_shadows();
-    print("2");
-    // hopping();
-    print("3");
-    // landslides();
+    hopping();
+    landslides();
+    calculate_shadows();
 }
 
 void Field::fix_cells() {
+    // NOTE: for_each
     for (Cell* c : field_vector)
         c->fix_cell();
 }
 
 void Field::load_neigbours() {
-    for (int x = 0; x < length; x++) {
-        for (int y = 0; y < width; y++) {
-            (*field)[x][y]->set_forward(warp_coordinates(x + 1, y));
-            (*field)[x][y]->set_backward(warp_coordinates(x - 1, y));
+    for (int y = 0; y < length; y++) {
+        for (int x = 0; x < width; x++) {
+            field[y][x]->set_forward(warp_coordinates(y, x + 1));
+            field[y][x]->set_backward(warp_coordinates(y, x - 1));
 
-            (*field)[x][y]->set_sides(warp_coordinates(x, y + 1));
-            (*field)[x][y]->set_sides(warp_coordinates(x, y - 1));
+            field[y][x]->set_sides(warp_coordinates(y + 1, x));
+            field[y][x]->set_sides(warp_coordinates(y - 1, x));
             
-            (*field)[x][y]->set_front_diags(warp_coordinates(x + 1, y + 1));
-            (*field)[x][y]->set_front_diags(warp_coordinates(x + 1, y - 1));
-            (*field)[x][y]->set_back_diags(warp_coordinates(x - 1, y + 1));
-            (*field)[x][y]->set_back_diags(warp_coordinates(x - 1, y - 1));
+            field[y][x]->set_front_diags(warp_coordinates(y + 1, x + 1));
+            field[y][x]->set_front_diags(warp_coordinates(y - 1, x + 1));
+            field[y][x]->set_back_diags(warp_coordinates(y + 1, x - 1));
+            field[y][x]->set_back_diags(warp_coordinates(y - 1, x - 1));
 
-            (*field)[x][y]->set_neigbours();
-            (*field)[x][y]->set_diags();
+            field[y][x]->set_neigbours();
+            field[y][x]->set_diags();
         }
     }
 }
@@ -64,7 +83,7 @@ Cell* Field::warp_coordinates(int x, int y) {
     if (y < 0)
         y += width;
     
-    return (*field)[x][y];
+    return field[x][y];
 }
 
 void Field::hopping() {
@@ -73,13 +92,13 @@ void Field::hopping() {
     if (DISTINCT_HOP) {
         std::random_shuffle(rnd_field_vector.begin(), rnd_field_vector.end());
         for (int i = 0; i < n_hops; i++){
-            // rnd_field_vector[i]->hop();
+            rnd_field_vector[i]->hop();
         }
     }
 
     else {
         for (;n_hops > 0; n_hops--) {
-            int i = random.integer(0, field_size);
+            int i = random.integer(0, field_size - 1);
             field_vector[i]->hop();
         }
     }
@@ -87,8 +106,8 @@ void Field::hopping() {
 
 void Field::calculate_shadows() {
     // NOTE: for_each
-    for (std::vector<Cell*> row : (*field)) {
-        row[0]->calculate_shadow(0, 2 * length);
+    for (auto c : first_column) {
+        c->calculate_shadow(0, 2 * length);
     }
 }
 
@@ -99,13 +118,15 @@ void Field::landslides() {
     for (auto c : field_vector) {
         c->landslide(MOORE);
     }
+
+    fix_cells();
 }
 
 std::vector<std::vector<int>> Field::get_heights(){
     std::vector<std::vector<int>> ret(length, std::vector<int>(width, 0));
     for (int x = 0; x < length; x++) {
         for (int y = 0; y < width; y++) {
-            ret[x][y] = (*field)[x][y]->get_height();
+            ret[x][y] = field[x][y]->get_height();
         }
     }
 
@@ -116,7 +137,7 @@ std::vector<std::vector<bool>> Field::get_shadows(){
     std::vector<std::vector<bool>> ret(length, std::vector<bool>(width));
     for (int x = 0; x < length; x++) {
         for (int y = 0; y < width; y++) {
-            ret[x][y] = (*field)[x][y]->get_shadow();
+            ret[x][y] = field[x][y]->get_shadow();
         }
     }
 
@@ -162,4 +183,32 @@ void Field::print_shadows() {
         }
         std::cout << std::endl;
     }
+}
+
+std::vector<int> Field::get_heights_arr() {
+    std::cout << std::endl << "field vector size: " << field_vector.size() << std::endl;
+    std::cout << "rnd vector size: " << rnd_field_vector.size() << std::endl;
+    std::cout << "field size: " << field_size << std::endl;
+    std::cout << "pointer: " << this << std::endl;
+    
+    std::vector<int> ret;
+    for (auto c : field_vector) {
+        std::cout << c->get_height() << " ";
+        ret.push_back(c->get_height());
+    }
+
+    return ret;
+}
+
+std::vector<bool> Field::get_shadows_arr() {
+    std::cout << "pointer: " << this << std::endl;
+    std::vector<bool> ret;
+    for (auto c : field_vector)
+        ret.push_back(c->get_shadow());
+    return ret;
+}
+
+int Field::get_width() {
+    std::cout << "pointer: " << this << std::endl;
+    return width;
 }

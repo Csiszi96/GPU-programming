@@ -12,18 +12,29 @@ T max_val(T x) {
 Cell::Cell(int h) : height(h), temp_height(h)
     {}
 
-void Cell::erode() {
-    if (height > 0)
-        temp_height--; 
-    else
+bool Cell::erode() {
+    if (height > 0){
+        height--; 
+        return true;
+    }
+    else{
         std::cout << std::endl << "ERROR: tried to erode cell with height: "<< height << std::endl;
+        return false;
+    }
 }
 
 void Cell::stack() { 
     if (height < max_val(height))
-        temp_height++; 
+        height++; 
     else
         std::cout << std::endl << "ERROR: tried to stack cell with height: "<< height << std::endl;    
+}
+
+void Cell::stack_tmp() { 
+    if (temp_height < max_val(temp_height))
+        temp_height++; 
+    else
+        std::cout << std::endl << "ERROR: tried to stack cell with height: "<< temp_height << std::endl;    
 }
 
 bool Cell::deposited() {
@@ -46,10 +57,8 @@ void Cell::jump() {
 }
 
 void Cell::hop() {
-    if (height > 0) {
-        erode();
+    if (erode())
         jump();
-    }
 }
 
 void Cell::fix_cell() 
@@ -93,9 +102,9 @@ void Cell::landslide(bool moore) {
     // Newton style landslide (only neighbours)
     std::random_shuffle(neigbours.begin(), neigbours.end());
     for (auto c : neigbours) {
-        if ( c->get_height() - temp_height >= LANDSLIDE_DELTA) {
-            c->erode();
-            stack();
+        if ( temp_height - c->get_height() >= LANDSLIDE_DELTA) {
+            c->stack_tmp();
+            temp_height--; // not erode() !!
         }
     }
 
@@ -103,9 +112,9 @@ void Cell::landslide(bool moore) {
     if (moore) {
         std::random_shuffle(diags.begin(), diags.end());
         for (auto c : diags) {
-            if ( c->get_height() - temp_height >= LANDSLIDE_DELTA) {
-                c->erode();
-                stack();
+            if ( temp_height - c->get_height() >= LANDSLIDE_DELTA) {
+                c->stack_tmp();
+                temp_height --; // not erode() !!
             }
         }
     }
@@ -113,9 +122,19 @@ void Cell::landslide(bool moore) {
 
 void Cell::calculate_shadow(float init_shadow, int counter) {
     if (init_shadow > 0) shadow = true;
-    float next_shadow = init_shadow - 1 + (height - forward->get_height()) * SHADOW_LENGTH;
-    if (counter > 0) 
+    else shadow = false;
+
+    if (counter > 0) {
+        // How much does the previous shadow over reach?
+        float remainder = init_shadow - 1;
+        if (remainder < 0) remainder = 0;
+
+        // Get next shadow by calculating height difference and adding remainder
+        float next_shadow = remainder + (height - forward->get_height()) * SHADOW_LENGTH;
+        if (next_shadow < 0) next_shadow = 0;
+
         forward->calculate_shadow(next_shadow, counter -1);
+    }
 }
 
 void Cell::set_shadow_length(float x){

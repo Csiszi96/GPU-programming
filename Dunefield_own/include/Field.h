@@ -14,16 +14,20 @@ class Field {
         int length;
         double hopping_prec;
         Random random;
-        int field_size;
+        // int field_size;
         
         // Might want to change initialization height or randomize (with changable mean)
         int height = 10;
-        std::vector<std::vector<Cell*>>* field;
-        std::vector<Cell*> field_vector;
+        std::vector<std::vector<Cell*>> field;
+        // std::vector<Cell*> field_vector;
         std::vector<Cell*> rnd_field_vector;
+        std::vector<Cell*> first_column;
 
         
     public:
+        std::vector<Cell*> field_vector;
+        int field_size;
+
         Field(int w, int l);
         Field(int w, int l, double p);
 
@@ -52,6 +56,8 @@ class Field {
         // Read the state of the sandpit
         std::vector<std::vector<int>> get_heights();
         std::vector<std::vector<bool>> get_shadows();
+        std::vector<int> get_heights_arr();
+        std::vector<bool> get_shadows_arr();
 
         // std::vector<std::vector<bool>> get_shadows();
         
@@ -61,4 +67,6 @@ class Field {
 
         void print_heights();
         void print_shadows();
+
+        int get_width();
 };
