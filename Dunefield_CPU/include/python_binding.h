@@ -21,7 +21,8 @@ PYBIND11_MODULE(cpu_dunefield, mod) {
         .def("get_heights", &CPU_Field::get_heights_arr)
         .def("get_shadows", &CPU_Field::get_shadows_arr)
         .def("width", &CPU_Field::get_width)
-        .def( "initialize", py::overload_cast<int, int>(&CPU_Field::init));
+        .def( "initialize", py::overload_cast<int, int>(&CPU_Field::init))
+        .def("check_block_level", &CPU_Field::check_block_level);
     mod.def("make_ptr", &make_ptr);
     mod.def("delete_ptr", &destroy_ptr);
     mod.def("heights", &get_h);

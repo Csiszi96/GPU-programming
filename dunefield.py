@@ -3,45 +3,56 @@ import numpy
 from matplotlib import pyplot
 from matplotlib import animation
 import seaborn as sns
+from tqdm import tqdm
+import time
 
 from  Dunefield_CPU.Debug.cpu_dunefield import CPU_Field 
 from  Dunefield_GPU.Debug.gpu_dunefield import GPU_Field 
 
+field_type = {
+    'GPU': GPU_Field,
+    'CPU': CPU_Field
+}
 
-width = 500
-length = 500
+def simulate(width, length, n, f_type):
+    field = field_type[f_type]()
+    field.initialize(width, length)
+    
+    time = []
 
-field = GPU_Field()
-field.initialize(width, length)
-
-def simulate(n):
-    time = numpy.array([])
-
-    for _ in range(n):
-        print(".", end="")
-        field.simulate_frame()
-        # numpy.append(time, field.simulate_frame())
+    for _ in tqdm(range(n)):
+        # field.simulate_frame()
+        time.append(field.simulate_frame())
         
-    print("Average time taken per frame: %f" % time.mean())
-    print("Overall time taken: %f" % time.sum())
+    print("Average time taken per frame: %f" % numpy.mean(time))
+    print("Overall time taken: %f" % sum(time))
+
+    print("Number of blocks changed: %i" % field.check_block_level())
 
     pyplot.imshow(numpy.array(field.get_heights()).reshape([width, length]), cmap='hot', interpolation='nearest')
     pyplot.show()
 
-def animation():
-    fig = pyplot.figure()
-    ax = sns.heatmap(numpy.array(field.get_heights()).reshape([width,length]), square=True, cbar=True)
+def animate(width, length, f_type):
+    field = field_type[f_type]()
+    field.initialize(width, length)
+
+    fig, ax = pyplot.subplots()
+    # ax = sns.heatmap(numpy.array(field.get_heights()).reshape([width,length]), square=True, cbar=True)
+    ax.imshow(numpy.array(field.get_heights()).reshape([width,length]), cmap='hot', interpolation='nearest')
 
     def frames():
         while True:
+            # time.sleep(20)
             yield 0
 
-    def animate(args):
+    def func(args):
         for _ in range(10): field.simulate_frame()
-        ax = sns.heatmap(numpy.array(field.get_heights()).reshape([width,length]), square=True, cbar=False)
+        # ax = sns.heatmap(numpy.array(field.get_heights()).reshape([width,length]), square=True, cbar=False)
+        ax.imshow(numpy.array(field.get_heights()).reshape([width,length]), cmap='hot', interpolation='nearest')
 
-    anim = animation.FuncAnimation(fig, animate, frames=frames, interval=30)
+    anim = animation.FuncAnimation(fig, func, frames=frames, interval=200)
     pyplot.show()
 
 if __name__ == '__main__':
-    simulate(10)
+    simulate(width = 250, length = 250, n = 10000, f_type="GPU")
+    # animate(100,100,"CPU")

@@ -1,6 +1,7 @@
 
 #include "field.h"
 #include <random>
+#include <numeric>
 
 
 GPU_Field::GPU_Field(int w, int l, int h, float pj, float ps, int hl, float ss, int ld) {
@@ -88,9 +89,8 @@ void GPU_Field::init(int w, int l, int h, float pj, float ps, int hl, float ss, 
     init_curand();
     std::cout << "Done..." << std::endl;
 
-    
-    // gpu_malloc((void**) &p_rnd_nums, n_jump*sizeof(float));
-    // gpu_copy(p_rnd_nums, rnd_nums.data(), n_jump*sizeof(float), cudaMemcpyHostToDevice);
+    auto tmp = get_heights();
+    no_blocks = std::accumulate(tmp.begin(), tmp.end(), decltype(tmp)::value_type(0));
 }
 
 void GPU_Field::init(int w, int l, int h) {
@@ -292,4 +292,10 @@ void GPU_Field::print_shadows() {
             std::cout << (bool)shadow[y * width + x] << "\t";
         std::cout << std::endl;
     }
+}
+
+int GPU_Field::check_block_level() {
+    auto tmp = get_heights();
+    int sum = std::accumulate(tmp.begin(), tmp.end(), decltype(tmp)::value_type(0));
+    return sum - no_blocks;
 }

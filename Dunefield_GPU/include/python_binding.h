@@ -17,7 +17,8 @@ PYBIND11_MODULE(gpu_dunefield, mod) {
         .def("initialize", py::overload_cast<int, int>(&GPU_Field::init))
         .def("simulate_frame", &GPU_Field::simulate_frame)
         .def("get_heights", &GPU_Field::get_heights)
-        .def("get_shadows", &GPU_Field::get_shadows);
+        .def("get_shadows", &GPU_Field::get_shadows)
+        .def("check_block_level", &GPU_Field::check_block_level);
 }
 
 #endif /* python_bynding */

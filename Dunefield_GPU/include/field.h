@@ -44,6 +44,8 @@ class GPU_Field {
 
         float dt = 0.0f;
 
+        int no_blocks;
+
     public:
         // Overloaded constructors
         GPU_Field();
@@ -78,6 +80,8 @@ class GPU_Field {
 
         void print_field();
         void print_shadows();
+
+        int check_block_level();
 };
 
 

@@ -2,6 +2,8 @@
 #include <algorithm>
 #include <iostream>
 #include <chrono>
+#include <numeric>
+#include <execution>
 
 void print(std::string msg) {
     std::cout << msg << std::endl;
@@ -54,6 +56,9 @@ void CPU_Field::init(int w, int l, double p) {
     std::cout << "pointer: " << this << std::endl;
 
     bool_init = true;
+
+    auto tmp = get_heights_arr();
+    no_blocks = std::accumulate(tmp.begin(), tmp.end(), decltype(tmp)::value_type(0));
 }
 
 bool CPU_Field::initialized() {
@@ -73,13 +78,16 @@ int CPU_Field::simulate_frame() {
     calculate_shadows();
 
     auto stop = std::chrono::high_resolution_clock::now();
-    return std::chrono::duration_cast<std::chrono::microseconds>(stop - start).count();
+    return (int)std::chrono::duration_cast<std::chrono::microseconds>(stop - start).count();
 }
 
 void CPU_Field::fix_cells() {
-    // NOTE: for_each
-    for (Cell* c : field_vector)
-        c->fix_cell();
+    std::for_each(
+        // std::execution::par,
+        std::begin(field_vector),
+        std::end(field_vector),
+        [](Cell* &c) {  c->fix_cell(); }
+    );
 }
 
 void CPU_Field::load_neigbours() {
@@ -134,19 +142,21 @@ void CPU_Field::hopping() {
 }
 
 void CPU_Field::calculate_shadows() {
-    // NOTE: for_each
-    for (auto c : first_column) {
-        c->calculate_shadow(0, 2 * length);
-    }
+    std::for_each(
+        // std::execution::par,
+        std::begin(first_column),
+        std::end(first_column),
+        [&](Cell* &c) {  c->calculate_shadow(0, 2 * length); }
+    );
 }
 
 void CPU_Field::landslides() {
-    // NOTE: for_each
-    // std::for_each(field_vector.begin(), field_vector.end(), [](auto c){c->landslide(MOORE);} );
-
-    for (auto c : field_vector) {
-        c->landslide(MOORE);
-    }
+    std::for_each(
+        // std::execution::par,
+        std::begin(field_vector),
+        std::end(field_vector),
+        [&](Cell* &c) {  c->landslide(MOORE); }
+    );
 
     fix_cells();
 }
@@ -174,24 +184,30 @@ std::vector<std::vector<bool>> CPU_Field::get_shadows(){
 }
 
 void CPU_Field::set_shadow_length(float x){
-    // NOTE: for_each
-    for (auto c : field_vector) {
-        c->set_shadow_length(x);
-    }
+    std::for_each(
+        // std::execution::par,
+        std::begin(field_vector),
+        std::end(field_vector),
+        [&x](Cell* &c) {  c->set_shadow_length(x); }
+    );
 }
 
 void CPU_Field::set_jump_length(int x) {
-    // NOTE: for_each
-    for (auto c : field_vector) {
-        c->set_jump_length(x);
-    }
+    std::for_each(
+        // std::execution::par,
+        std::begin(field_vector),
+        std::end(field_vector),
+        [&x](Cell* &c) {  c->set_jump_length(x); }
+    );
 }
 
 void CPU_Field::set_landslide_delta(int x){
-    // NOTE: for_each
-    for (auto c : field_vector) {
-        c->set_landslide_delta(x);
-    }
+    std::for_each(
+        // std::execution::par,
+        std::begin(field_vector),
+        std::end(field_vector),
+        [&x](Cell* &c) {  c->set_landslide_delta(x); }
+    );
 }
 
 void CPU_Field::print_heights() {
@@ -214,9 +230,7 @@ void CPU_Field::print_shadows() {
     }
 }
 
-std::vector<int> CPU_Field::get_heights_arr() {
-    std::cout << "pointer: " << this << std::endl;
-    
+std::vector<int> CPU_Field::get_heights_arr() {    
     std::vector<int> ret;
     for (auto c : field_vector)
         ret.push_back(c->get_height());
@@ -236,3 +250,10 @@ int CPU_Field::get_width() {
     std::cout << "pointer: " << this << std::endl;
     return width;
 }
+
+int CPU_Field::check_block_level() {
+    auto tmp = get_heights_arr();
+    int sum = std::accumulate(tmp.begin(), tmp.end(), decltype(tmp)::value_type(0));
+    return sum - no_blocks;
+}
+

@@ -25,6 +25,7 @@ class CPU_Field {
         std::vector<Cell*> rnd_field_vector;
         std::vector<Cell*> first_column;
 
+        int no_blocks;
         
     public:
         CPU_Field();
@@ -73,4 +74,6 @@ class CPU_Field {
         void init(int, int, double);
         void init(int, int);
         bool initialized();
+        
+        int check_block_level();
 };
