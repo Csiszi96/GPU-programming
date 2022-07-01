@@ -3,16 +3,25 @@
 
 #include "gpu.h"
 #include "field.h"
+#include "python_binding.h"
 
+void test() {
+    GPU_Field f;
+    std::cout << "01" << std::endl;
 
-int main() {
-    
-    Field f(64,64);
+    int width = 10;
+    int length = 10;
 
-    std::vector<int> tmp = f.get_heights();
+    f.init(width, length);
 
-    for (auto x : tmp)
-        std::cout << x << " ";
+    f.simulate_frame();
 
-	return 0;
+    f.print_field();
+    // f.print_shadows();
 }
+
+
+// int main() {
+//     test();
+// 	return 0;
+// }

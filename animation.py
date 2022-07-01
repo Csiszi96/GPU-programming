@@ -1,23 +1,23 @@
 
-from matplotlib import pyplot
-import numpy
-import PySimpleGUI as sg
+# from matplotlib import pyplot
+# import numpy
+# import PySimpleGUI as sg
 
-length = 0
-width = 0
+# length = 0
+# width = 0
 
-sg.theme('DarkBlack')
-layout = [
-    [sg.Text('Simulation parameters:')],
-    [sg.Text('length (x): '), sg.Input(length, key='x')],
-    [sg.Text('width (y): '), sg.Input(width, key='y')]
-]
+# sg.theme('DarkBlack')
+# layout = [
+#     [sg.Text('Simulation parameters:')],
+#     [sg.Text('length (x): '), sg.Input(length, key='x')],
+#     [sg.Text('width (y): '), sg.Input(width, key='y')]
+# ]
 
-vec =numpy.random.rand(50,50)
+# vec =numpy.random.rand(50,50)
 
 
-pyplot.imshow(vec, cmap='hot', interpolation='nearest')
-pyplot.show()
+# pyplot.imshow(vec, cmap='hot', interpolation='nearest')
+# pyplot.show()
 
 
 
@@ -123,7 +123,7 @@ pyplot.show()
 #         break
 # _VARS['window'].close()
 
-############################################################################################
+# ###########################################################################################
 
 # import PySimpleGUI as sg
 
@@ -157,38 +157,38 @@ pyplot.show()
 
 ############################################################################################
 
-# import random
-# import time
+import random
+import time
 
-# from matplotlib import pyplot as plt
-# from matplotlib import animation
-
-
-# class RegrMagic(object):
-#     """Mock for function Regr_magic()
-#     """
-#     def __init__(self):
-#         self.x = 0
-#     def __call__(self):
-#         time.sleep(random.random())
-#         self.x += 1
-#         return self.x, random.random()
-
-# regr_magic = RegrMagic()
-
-# def frames():
-#     while True:
-#         yield regr_magic()
-
-# fig = plt.figure()
-
-# x = []
-# y = []
-# def animate(args):
-#     x.append(args[0])
-#     y.append(args[1])
-#     return plt.plot(x, y, color='g')
+from matplotlib import pyplot as plt
+from matplotlib import animation
 
 
-# anim = animation.FuncAnimation(fig, animate, frames=frames, interval=1000)
-# plt.show()
+class RegrMagic(object):
+    """Mock for function Regr_magic()
+    """
+    def __init__(self):
+        self.x = 0
+    def __call__(self):
+        time.sleep(random.random())
+        self.x += 1
+        return self.x, random.random()
+
+regr_magic = RegrMagic()
+
+def frames():
+    while True:
+        yield regr_magic()
+
+fig = plt.figure()
+
+x = []
+y = []
+def animate(args):
+    x.append(args[0])
+    y.append(args[1])
+    return plt.plot(x, y, color='g')
+
+
+anim = animation.FuncAnimation(fig, animate, frames=frames, interval=1000)
+plt.show()

@@ -20,7 +20,8 @@ __global__ void curand_generate_distinct(curandState_t* states, int* p_hopping_i
 __global__ void hop(
     int* p_height, 
     int* p_hopping_idxs, 
-    int* p_shadow, 
+    // bool* p_shadow, 
+    float* p_shadow, 
     int* p_length, 
     int* p_width, 
     int* p_hopping_length, 
@@ -29,11 +30,17 @@ __global__ void hop(
 );
 
 // Calculate shadows
-__global__ void shadows(int* p_height,  bool* p_shadow, int* p_length, float* p_size_shadow);
+__global__ void shadows(
+    int* p_height,  
+    // bool* p_shadow, 
+    float* p_shadow, 
+    int* p_length, 
+    float* p_size_shadow
+);
 
 // Simulate landslides
-__global__ void landslide(int* p_height, int* p_length, int* p_width);
-__global__ void landslide_moore(int* p_height, int* p_length, int* p_width);
+__global__ void landslide(int* p_height, int* p_length, int* p_width, int* p_landslide_delta);
+__global__ void landslide_moore(int* p_height, int* p_length, int* p_width, int* p_landslide_delta);
 
 
 #endif /* gpu_functions */

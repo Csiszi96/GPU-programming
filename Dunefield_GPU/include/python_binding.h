@@ -3,13 +3,21 @@
 
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
+#include <pybind11/iostream.h>
 
-PYBIND11_MODULE(cpp_arit, mod) {
-    py::class_<Field>(mod, "Field")
+namespace py = pybind11;
+
+PYBIND11_MODULE(gpu_dunefield, mod) {
+    mod.doc() = "A simulation based on Werner's sandune model, written in CUDA.";
+    
+    py::add_ostream_redirect(mod, "ostream_redirect");
+    py::class_<GPU_Field, std::shared_ptr<GPU_Field>>(mod, "GPU_Field")
         .def(py::init<>())
-        .def("simulate_frame", &Field::simulate_frame)
-        .def("get_heights", &Field::get_heights)
-        .def("get_shadows", &Field::get_shadows);
+        .def("initialize", py::overload_cast<int, int, int, float, float, int, float, int>(&GPU_Field::init))
+        .def("initialize", py::overload_cast<int, int>(&GPU_Field::init))
+        .def("simulate_frame", &GPU_Field::simulate_frame)
+        .def("get_heights", &GPU_Field::get_heights)
+        .def("get_shadows", &GPU_Field::get_shadows);
 }
 
 #endif /* python_bynding */

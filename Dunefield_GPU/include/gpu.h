@@ -17,7 +17,11 @@
 
 void gpu_check_err(std::string message);
 
-void gpu_stream(cudaStream_t* stream);
+void gpu_stream_create(cudaStream_t &stream);
+
+void gpu_event_create(cudaEvent_t &event);
+
+void gpu_event(std::string event, cudaEvent_t &evt, cudaStream_t &stream);
 
 /////////////////////////////////////////////////////////////////////////////////////////////
 

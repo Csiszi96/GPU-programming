@@ -58,12 +58,32 @@ void gpu_check_err(std::string message) {
     }
 }
 
-void gpu_stream(cudaStream_t* stream) {
+void gpu_stream_create(cudaStream_t &stream) {
     cudaError_t err = cudaSuccess;
-    err = cudaStreamCreate(stream);
+    err = cudaStreamCreate(&stream);
     if( err != cudaSuccess) {
         std::cout 
             << "Error creating CUDA stream: " << cudaGetErrorString(err) << "\n"; 
+        exit(-1); 
+    }
+}
+
+void gpu_event_create(cudaEvent_t &event) {
+    cudaError_t err = cudaSuccess;
+    err = cudaEventCreate(&event);
+    if( err != cudaSuccess) {
+        std::cout 
+            << "Error creating CUDA event: " << cudaGetErrorString(err) << "\n"; 
+        exit(-1); 
+    }
+}
+
+void gpu_event(std::string event, cudaEvent_t &evt, cudaStream_t &stream) {
+    cudaError_t err = cudaSuccess;
+    err = cudaEventRecord(evt, stream);
+    if( err != cudaSuccess) {
+        std::cout 
+            << "Error recording event" << event << ": " << cudaGetErrorString(err) << "\n"; 
         exit(-1); 
     }
 }
